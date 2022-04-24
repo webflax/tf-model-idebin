@@ -1,9 +1,11 @@
+# Load Liblary 
 from tensorflow.keras import models
 import pandas as pd
 import numpy as np
 import json
 from flask import Flask, request 
 
+# Model weights are uploaded separately to the server
 model_team = models.load_model('best_model_team.h5') # load model neural network team 
 model_risk = models.load_model('best_model_risk.h5') # load model neural network risk
 
@@ -31,19 +33,16 @@ app = Flask(__name__)
 
 @app.route('/nnteam/', methods=['GET', 'POST']) #neural network team 
 def nnteam():
-    X = request.json
-    print(X)
-    print(perprocess_data_team(X['a']))    
-    print(perprocess_data_team(X['b']))
+    X = request.json   # get json
     per__ = {}
     for i in X: 
-        per__[str(i)] = np.argmax(model_team.predict(perprocess_data_team(X[str(i)])) )+1
+        per__[str(i)] = np.argmax(model_team.predict(perprocess_data_team(X[str(i)])) )+1  #predict data
     return str(per__)
 
 @app.route('/nnrisk/', methods=['GET', 'POST']) #neural network risk 
 def nnrisk():
-    x = request.json
-    predict_risk=np.argmax(model_risk.predict(perprocess_data_risk(x)) )+1
+    x = request.json    # get json
+    predict_risk=np.argmax(model_risk.predict(perprocess_data_risk(x)) )+1   #predict data
     return str(predict_risk)
 
 
