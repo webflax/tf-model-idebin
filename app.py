@@ -2,7 +2,7 @@
 from tensorflow.keras import models
 import numpy as np
 import json
-from flask import Flask, request, json
+from flask import Flask, request, json, jsonify
 
 # Model weights are uploaded separately to the server
 model_team = models.load_model('best_model_team.h5') # load model neural network team
@@ -34,11 +34,13 @@ def nnteam():
     headers = request.headers.get("API_TOKEN")
     if headers=='92fb570bf390c99e7edaf171a9692efd99abc226b0dea65484aab853663b218c':
         X = json.loads(request.data)#request.json   # get json
+        print(X)
         X = X['data']
         per__ = {}
         for i in X:
-            per__[str(i)] = np.argmax(model_team.predict(perprocess_data_team(X[str(i)])) )+1  #predict data
-        return {"risk team":str(per__)}
+            a = np.argmax(model_team.predict(perprocess_data_team(X[str(i)])) )+1  #predict data
+            per__[str(i)] = str(a)
+        return jsonify(str(per__))
     else:
         return "bad request"
 
